@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -79,7 +78,7 @@ public class NearbyMessagingActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_nearby);
 
         publishButton = (Button) findViewById(R.id.publish_button);
         subscribeButton = (Button) findViewById(R.id.subscribe_button);
