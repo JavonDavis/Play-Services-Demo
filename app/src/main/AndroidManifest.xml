@@ -21,7 +21,8 @@
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="ocr" />
 
-        <activity android:name=".nearbymessaging.NearbyMessagingActivity"></activity>
+        <activity android:name=".nearbymessaging.NearbyMessagingActivity" />
+
         <activity android:name=".textdetection.TextDetectionActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
