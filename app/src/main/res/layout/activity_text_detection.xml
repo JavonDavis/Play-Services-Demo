@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-     s   <com.javon.playservicesdemo.util.GraphicOverlay
+        <com.javon.playservicesdemo.util.GraphicOverlay
             android:id="@+id/graphicOverlay"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
