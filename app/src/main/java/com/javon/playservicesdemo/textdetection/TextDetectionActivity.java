@@ -54,6 +54,7 @@ public class TextDetectionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_text_detection);
 
         cameraSourcePreview = (CameraSourcePreview) findViewById(R.id.preview);
+        graphicOverlay = (GraphicOverlay<OcrGraphic>) findViewById(R.id.graphicOverlay);
 
         // Set good defaults for capturing text.
         boolean autoFocus = true;
