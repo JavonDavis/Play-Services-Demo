@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Play Services Demo</string>
+    <string name="prompt_take_picture">Take Picture!</string>
 </resources>

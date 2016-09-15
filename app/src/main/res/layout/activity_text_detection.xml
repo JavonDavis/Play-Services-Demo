@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_text_detection"
@@ -12,16 +12,11 @@
     tools:context="com.javon.playservicesdemo.textdetection.TextDetectionActivity"
     android:keepScreenOn="true">
 
-    <com.javon.playservicesdemo.util.CameraSourcePreview
-        android:id="@+id/preview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-        <com.javon.playservicesdemo.util.GraphicOverlay
-            android:id="@+id/graphicOverlay"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </com.javon.playservicesdemo.util.CameraSourcePreview>
-
-</LinearLayout>
+    <Button
+        android:text="@string/prompt_take_picture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>
