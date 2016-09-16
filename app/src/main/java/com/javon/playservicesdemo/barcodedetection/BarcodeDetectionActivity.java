@@ -24,6 +24,8 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.barcode.Barcode;
+import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 import com.javon.playservicesdemo.R;
@@ -167,11 +169,13 @@ public class BarcodeDetectionActivity extends AppCompatActivity {
                 imageBitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
 
                 if(imageBitmap != null) {
-                    StringBuilder detectedText = new StringBuilder();
+                    StringBuilder barcodeInfo = new StringBuilder();
 
-                    TextRecognizer textRecognizer = new TextRecognizer.Builder(this).build();
+                    BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(this)
+                            .setBarcodeFormats(Barcode.DATA_MATRIX | Barcode.QR_CODE)
+                            .build();
 
-                    if(!textRecognizer.isOperational()) {
+                    if(!barcodeDetector.isOperational()) {
                         // Note: The first time that an app using a Vision API is installed on a
                         // device, GMS will download a native libraries to the device in order to do detection.
                         // Usually this completes before the app is run for the first time.  But if that
@@ -199,16 +203,16 @@ public class BarcodeDetectionActivity extends AppCompatActivity {
                             .setBitmap(imageBitmap)
                             .build();
 
-                    SparseArray<TextBlock> textBlocks = textRecognizer.detect(imageFrame);
+                    SparseArray<Barcode> barcodes = barcodeDetector.detect(imageFrame);
 
-                    for (int i = 0; i < textBlocks.size(); i++) {
-                        TextBlock textBlock = textBlocks.get(i);
+                    for (int i = 0; i < barcodes.size(); i++) {
+                        Barcode barcode = barcodes.get(i);
 
-                        detectedText.append(textBlock.getValue());
-                        detectedText.append("\n");
+                        barcodeInfo.append(barcode.displayValue);
+                        barcodeInfo.append("\n");
                     }
 
-                    result = detectedText.toString();
+                    result = barcodeInfo.toString();
 
                     if (result.isEmpty()) {
                         result = "Detected no text!";
@@ -224,7 +228,7 @@ public class BarcodeDetectionActivity extends AppCompatActivity {
 
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Text Detection sample")
+            builder.setTitle("Barcode Detection sample")
                     .setMessage(result)
                     .setPositiveButton("OK", null)
                     .show();
