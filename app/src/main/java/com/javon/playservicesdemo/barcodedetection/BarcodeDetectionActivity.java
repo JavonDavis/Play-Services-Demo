@@ -1,4 +1,4 @@
-package com.javon.playservicesdemo.textdetection;
+package com.javon.playservicesdemo.barcodedetection;
 
 import android.Manifest;
 import android.app.Activity;
@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -17,6 +16,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
@@ -30,9 +30,9 @@ import com.javon.playservicesdemo.R;
 
 import java.io.File;
 
-public class TextDetectionActivity extends AppCompatActivity {
+public class BarcodeDetectionActivity extends AppCompatActivity {
 
-    private static String LOG_TAG = "TextDetectionActivity";
+    private static String LOG_TAG = "BarcodeDetection";
 
     // Permission request codes need to be < 256
     private static final int RC_HANDLE_CAMERA_PERM = 2;
@@ -44,9 +44,9 @@ public class TextDetectionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_text_detection);
+        setContentView(R.layout.activity_barcode_detection);
 
-        container = (RelativeLayout) findViewById(R.id.activity_text_detection);
+        container = (RelativeLayout) findViewById(R.id.activity_barcode_detection);
 
     }
 
@@ -146,7 +146,7 @@ public class TextDetectionActivity extends AppCompatActivity {
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Text Detection sample")
+        builder.setTitle("Barcode Detection sample")
                 .setMessage("No camera")
                 .setPositiveButton("OK", listener)
                 .show();
