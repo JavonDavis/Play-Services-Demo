@@ -2,12 +2,15 @@ package com.javon.playservicesdemo.textdetection;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -27,6 +30,8 @@ import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 import com.javon.playservicesdemo.R;
 
+import java.io.File;
+
 public class TextDetectionActivity extends AppCompatActivity {
 
     private static String LOG_TAG = "TextDetectionActivity";
@@ -38,6 +43,8 @@ public class TextDetectionActivity extends AppCompatActivity {
     private static final int RC_HANDLE_CAMERA_PERM = 2;
     private RelativeLayout container;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
+
+    private Uri mImageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,10 +93,37 @@ public class TextDetectionActivity extends AppCompatActivity {
                 .show();
     }
 
+    private File createTemporaryFile(String part, String ext) throws Exception
+    {
+        File tempDir= Environment.getExternalStorageDirectory();
+        tempDir=new File(tempDir.getAbsolutePath()+"/.temp/");
+        if(!tempDir.exists())
+        {
+            tempDir.mkdirs();
+        }
+        return File.createTempFile(part, ext, tempDir);
+    }
+
     private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File photo;
+        try
+        {
+            // place where to store camera taken picture
+            photo = createTemporaryFile("picture", ".jpg");
+            photo.delete();
+        }
+        catch(Exception e)
+        {
+            Log.v(LOG_TAG, "Can't create file to take picture!");
+            Toast.makeText(this, "Please check SD card! Image shot is impossible!", Toast.LENGTH_LONG).show();
+            return ;
+        }
+        mImageUri = Uri.fromFile(photo);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
         }
     }
 
@@ -126,58 +160,73 @@ public class TextDetectionActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
+//            Bundle extras = data.getExtras();
+            //Bitmap imageBitmap = (Bitmap) extras.get("data");
             String result = "Error retrieving image";
 
-            if(imageBitmap != null) {
-                StringBuilder detectedText = new StringBuilder();
+            this.getContentResolver().notifyChange(mImageUri, null);
+            ContentResolver cr = this.getContentResolver();
+            Bitmap imageBitmap;
+            try
+            {
+                imageBitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
 
-                TextRecognizer textRecognizer = new TextRecognizer.Builder(this).build();
+                if(imageBitmap != null) {
+                    StringBuilder detectedText = new StringBuilder();
 
-                if(!textRecognizer.isOperational()) {
-                    // Note: The first time that an app using a Vision API is installed on a
-                    // device, GMS will download a native libraries to the device in order to do detection.
-                    // Usually this completes before the app is run for the first time.  But if that
-                    // download has not yet completed, then the above call will not detect any text,
-                    // barcodes, or faces.
-                    //
-                    // isOperational() can be used to check if the required native libraries are currently
-                    // available.  The detectors will automatically become operational once the library
-                    // downloads complete on device.
-                    Log.w(LOG_TAG, "Detector dependencies are not yet available.");
+                    TextRecognizer textRecognizer = new TextRecognizer.Builder(this).build();
 
-                    // Check for low storage.  If there is low storage, the native library will not be
-                    // downloaded, so detection will not become operational.
-                    IntentFilter lowstorageFilter = new IntentFilter(Intent.ACTION_DEVICE_STORAGE_LOW);
-                    boolean hasLowStorage = registerReceiver(null, lowstorageFilter) != null;
+                    if(!textRecognizer.isOperational()) {
+                        // Note: The first time that an app using a Vision API is installed on a
+                        // device, GMS will download a native libraries to the device in order to do detection.
+                        // Usually this completes before the app is run for the first time.  But if that
+                        // download has not yet completed, then the above call will not detect any text,
+                        // barcodes, or faces.
+                        //
+                        // isOperational() can be used to check if the required native libraries are currently
+                        // available.  The detectors will automatically become operational once the library
+                        // downloads complete on device.
+                        Log.w(LOG_TAG, "Detector dependencies are not yet available.");
 
-                    if (hasLowStorage) {
-                        Toast.makeText(this,"Low Storage", Toast.LENGTH_LONG).show();
-                        Log.w(LOG_TAG, "Low Storage");
+                        // Check for low storage.  If there is low storage, the native library will not be
+                        // downloaded, so detection will not become operational.
+                        IntentFilter lowstorageFilter = new IntentFilter(Intent.ACTION_DEVICE_STORAGE_LOW);
+                        boolean hasLowStorage = registerReceiver(null, lowstorageFilter) != null;
+
+                        if (hasLowStorage) {
+                            Toast.makeText(this,"Low Storage", Toast.LENGTH_LONG).show();
+                            Log.w(LOG_TAG, "Low Storage");
+                        }
                     }
+
+
+                    Frame imageFrame = new Frame.Builder()
+                            .setBitmap(imageBitmap)
+                            .build();
+
+                    SparseArray<TextBlock> textBlocks = textRecognizer.detect(imageFrame);
+
+                    for (int i = 0; i < textBlocks.size(); i++) {
+                        TextBlock textBlock = textBlocks.get(i);
+
+                        detectedText.append(textBlock.getValue());
+                        detectedText.append("\n");
+                    }
+
+                    result = detectedText.toString();
+
+                    if (result.isEmpty()) {
+                        result = "Detected no text!";
+                    }
+
                 }
-
-
-                Frame imageFrame = new Frame.Builder()
-                        .setBitmap(imageBitmap)
-                        .build();
-
-                SparseArray<TextBlock> textBlocks = textRecognizer.detect(imageFrame);
-
-                for (int i = 0; i < textBlocks.size(); i++) {
-                    TextBlock textBlock = textBlocks.get(i);
-
-                    detectedText.append(textBlock.getValue());
-                    detectedText.append("\n");
-                }
-
-
-                if ((result = detectedText.toString()).isEmpty()) {
-                    result = "Detected no text!";
-                }
-
             }
+            catch (Exception e)
+            {
+                Toast.makeText(this, "Failed to load", Toast.LENGTH_SHORT).show();
+                Log.d(LOG_TAG, "Failed to load", e);
+            }
+
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Text Detection sample")
