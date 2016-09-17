@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -16,7 +17,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
@@ -26,8 +26,6 @@ import android.widget.Toast;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
-import com.google.android.gms.vision.text.TextBlock;
-import com.google.android.gms.vision.text.TextRecognizer;
 import com.javon.playservicesdemo.R;
 
 import java.io.File;
@@ -172,7 +170,7 @@ public class BarcodeDetectionActivity extends AppCompatActivity {
                     StringBuilder barcodeInfo = new StringBuilder();
 
                     BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(this)
-                            .setBarcodeFormats(Barcode.DATA_MATRIX | Barcode.QR_CODE)
+                            .setBarcodeFormats(Barcode.ALL_FORMATS)
                             .build();
 
                     if(!barcodeDetector.isOperational()) {
@@ -206,7 +204,7 @@ public class BarcodeDetectionActivity extends AppCompatActivity {
                     SparseArray<Barcode> barcodes = barcodeDetector.detect(imageFrame);
 
                     for (int i = 0; i < barcodes.size(); i++) {
-                        Barcode barcode = barcodes.get(i);
+                        Barcode barcode = barcodes.get(barcodes.keyAt(i));
 
                         barcodeInfo.append(barcode.displayValue);
                         barcodeInfo.append("\n");
@@ -215,7 +213,7 @@ public class BarcodeDetectionActivity extends AppCompatActivity {
                     result = barcodeInfo.toString();
 
                     if (result.isEmpty()) {
-                        result = "Detected no text!";
+                        result = "Detected no Barcode!";
                     }
 
                 }
