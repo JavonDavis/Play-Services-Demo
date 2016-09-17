@@ -1,4 +1,4 @@
-package com.javon.playservicesdemo.textdetection;
+package com.javon.playservicesdemo.facedetection;
 
 import android.Manifest;
 import android.app.Activity;
@@ -24,15 +24,15 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.vision.Frame;
-import com.google.android.gms.vision.text.TextBlock;
-import com.google.android.gms.vision.text.TextRecognizer;
+import com.google.android.gms.vision.face.Face;
+import com.google.android.gms.vision.face.FaceDetector;
 import com.javon.playservicesdemo.R;
 
 import java.io.File;
 
-public class TextDetectionActivity extends AppCompatActivity {
+public class FaceDetectionActivity extends AppCompatActivity {
 
-    private static String LOG_TAG = "TextDetectionActivity";
+    private static String LOG_TAG = "FaceDetection";
 
     // Permission request codes need to be < 256
     private static final int RC_HANDLE_CAMERA_PERM = 2;
@@ -44,9 +44,9 @@ public class TextDetectionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_text_detection);
+        setContentView(R.layout.activity_face_detection);
 
-        container = (RelativeLayout) findViewById(R.id.activity_text_detection);
+        container = (RelativeLayout) findViewById(R.id.activity_face_detection);
 
     }
 
@@ -146,7 +146,7 @@ public class TextDetectionActivity extends AppCompatActivity {
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Text Detection sample")
+        builder.setTitle("Face Detection sample")
                 .setMessage("No camera")
                 .setPositiveButton("OK", listener)
                 .show();
@@ -167,11 +167,13 @@ public class TextDetectionActivity extends AppCompatActivity {
                 imageBitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
 
                 if(imageBitmap != null) {
-                    StringBuilder detectedText = new StringBuilder();
+                    StringBuilder faceInfo = new StringBuilder();
 
-                    TextRecognizer textRecognizer = new TextRecognizer.Builder(this).build();
+                    FaceDetector faceDetector = new FaceDetector.Builder(this)
+                            .setTrackingEnabled(false)
+                            .build();
 
-                    if(!textRecognizer.isOperational()) {
+                    if(!faceDetector.isOperational()) {
                         // Note: The first time that an app using a Vision API is installed on a
                         // device, GMS will download a native libraries to the device in order to do detection.
                         // Usually this completes before the app is run for the first time.  But if that
@@ -199,19 +201,29 @@ public class TextDetectionActivity extends AppCompatActivity {
                             .setBitmap(imageBitmap)
                             .build();
 
-                    SparseArray<TextBlock> textBlocks = textRecognizer.detect(imageFrame);
+                    SparseArray<Face> faces = faceDetector.detect(imageFrame);
 
-                    for (int i = 0; i < textBlocks.size(); i++) {
-                        TextBlock textBlock = textBlocks.get(textBlocks.keyAt(i));
+                    for (int i = 0; i < faces.size(); i++) {
+                        Face face = faces.get(faces.keyAt(i));
 
-                        detectedText.append(textBlock.getValue());
-                        detectedText.append("\n");
+                        String message = "Face was detected... ";
+                        if(face.getIsSmilingProbability() == Face.UNCOMPUTED_PROBABILITY) {
+                            message += "But we could not tell if it was happy or not :/";
+                        }
+                        else if(face.getIsSmilingProbability() < 0.5) {
+                            message += "and it wasn't so happy";
+                        }
+                        else {
+                            message += "and it was really happy!";
+                        }
+                        faceInfo.append(message);
+                        faceInfo.append("\n\n");
                     }
 
-                    result = detectedText.toString();
+                    result = faceInfo.toString();
 
                     if (result.isEmpty()) {
-                        result = "Detected no text!";
+                        result = "Detected no Face!";
                     }
 
                 }
@@ -224,7 +236,7 @@ public class TextDetectionActivity extends AppCompatActivity {
 
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Text Detection sample")
+            builder.setTitle("Face Detection sample")
                     .setMessage(result)
                     .setPositiveButton("OK", null)
                     .show();
