@@ -5,8 +5,8 @@
     <uses-feature android:name="android.hardware.camera" />
 
     <uses-permission android:name="android.permission.CAMERA" />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,10 +18,11 @@
             android:value="@string/API_KEY" />
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
-            android:value="ocr" />
+            android:value="ocr,barcode,face" />
 
         <activity android:name=".nearbymessaging.NearbyMessagingActivity" />
-        <activity android:name=".textdetection.TextDetectionActivity">
+        <activity android:name=".textdetection.TextDetectionActivity"/>
+        <activity android:name=".barcodedetection.BarcodeDetectionActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

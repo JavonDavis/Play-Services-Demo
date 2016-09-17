@@ -1,4 +1,4 @@
-package com.javon.playservicesdemo.textdetection;
+package com.javon.playservicesdemo.barcodedetection;
 
 import android.Manifest;
 import android.app.Activity;
@@ -24,15 +24,15 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.vision.Frame;
-import com.google.android.gms.vision.text.TextBlock;
-import com.google.android.gms.vision.text.TextRecognizer;
+import com.google.android.gms.vision.barcode.Barcode;
+import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.javon.playservicesdemo.R;
 
 import java.io.File;
 
-public class TextDetectionActivity extends AppCompatActivity {
+public class BarcodeDetectionActivity extends AppCompatActivity {
 
-    private static String LOG_TAG = "TextDetectionActivity";
+    private static String LOG_TAG = "BarcodeDetection";
 
     // Permission request codes need to be < 256
     private static final int RC_HANDLE_CAMERA_PERM = 2;
@@ -44,9 +44,9 @@ public class TextDetectionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_text_detection);
+        setContentView(R.layout.activity_barcode_detection);
 
-        container = (RelativeLayout) findViewById(R.id.activity_text_detection);
+        container = (RelativeLayout) findViewById(R.id.activity_barcode_detection);
 
     }
 
@@ -146,7 +146,7 @@ public class TextDetectionActivity extends AppCompatActivity {
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Text Detection sample")
+        builder.setTitle("Barcode Detection sample")
                 .setMessage("No camera")
                 .setPositiveButton("OK", listener)
                 .show();
@@ -167,11 +167,13 @@ public class TextDetectionActivity extends AppCompatActivity {
                 imageBitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
 
                 if(imageBitmap != null) {
-                    StringBuilder detectedText = new StringBuilder();
+                    StringBuilder barcodeInfo = new StringBuilder();
 
-                    TextRecognizer textRecognizer = new TextRecognizer.Builder(this).build();
+                    BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(this)
+                            .setBarcodeFormats(Barcode.ALL_FORMATS)
+                            .build();
 
-                    if(!textRecognizer.isOperational()) {
+                    if(!barcodeDetector.isOperational()) {
                         // Note: The first time that an app using a Vision API is installed on a
                         // device, GMS will download a native libraries to the device in order to do detection.
                         // Usually this completes before the app is run for the first time.  But if that
@@ -199,19 +201,19 @@ public class TextDetectionActivity extends AppCompatActivity {
                             .setBitmap(imageBitmap)
                             .build();
 
-                    SparseArray<TextBlock> textBlocks = textRecognizer.detect(imageFrame);
+                    SparseArray<Barcode> barcodes = barcodeDetector.detect(imageFrame);
 
-                    for (int i = 0; i < textBlocks.size(); i++) {
-                        TextBlock textBlock = textBlocks.get(i);
+                    for (int i = 0; i < barcodes.size(); i++) {
+                        Barcode barcode = barcodes.get(barcodes.keyAt(i));
 
-                        detectedText.append(textBlock.getValue());
-                        detectedText.append("\n");
+                        barcodeInfo.append(barcode.displayValue);
+                        barcodeInfo.append("\n");
                     }
 
-                    result = detectedText.toString();
+                    result = barcodeInfo.toString();
 
                     if (result.isEmpty()) {
-                        result = "Detected no text!";
+                        result = "Detected no Barcode!";
                     }
 
                 }
@@ -224,7 +226,7 @@ public class TextDetectionActivity extends AppCompatActivity {
 
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Text Detection sample")
+            builder.setTitle("Barcode Detection sample")
                     .setMessage(result)
                     .setPositiveButton("OK", null)
                     .show();
