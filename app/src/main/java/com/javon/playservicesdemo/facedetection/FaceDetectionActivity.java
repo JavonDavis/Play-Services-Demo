@@ -170,7 +170,8 @@ public class FaceDetectionActivity extends AppCompatActivity {
                     StringBuilder faceInfo = new StringBuilder();
 
                     FaceDetector faceDetector = new FaceDetector.Builder(this)
-                            .setTrackingEnabled(false)
+                            .setProminentFaceOnly(true)
+                            .setClassificationType(FaceDetector.ALL_CLASSIFICATIONS)
                             .build();
 
                     if(!faceDetector.isOperational()) {
