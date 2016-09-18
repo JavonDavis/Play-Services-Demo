@@ -21,8 +21,9 @@
             android:value="ocr,barcode,face" />
 
         <activity android:name=".nearbymessaging.NearbyMessagingActivity" />
-        <activity android:name=".textdetection.TextDetectionActivity"/>
-        <activity android:name=".barcodedetection.BarcodeDetectionActivity">
+        <activity android:name=".textdetection.TextDetectionActivity" />
+        <activity android:name=".barcodedetection.BarcodeDetectionActivity"/>
+        <activity android:name=".facedetection.FaceDetectionActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
