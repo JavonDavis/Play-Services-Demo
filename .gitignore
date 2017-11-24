@@ -43,3 +43,4 @@ captures/
 *.jks
 
 /app/src/main/res/values/strings-secure.xml
+/app/src/main/res/values/secure-strings.xml
