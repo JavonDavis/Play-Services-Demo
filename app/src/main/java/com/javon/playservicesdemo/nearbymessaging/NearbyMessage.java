@@ -2,7 +2,6 @@ package com.javon.playservicesdemo.nearbymessaging;
 
 import android.os.Build;
 
-import com.google.android.gms.nearby.bootstrap.Device;
 import com.google.android.gms.nearby.messages.Message;
 import com.google.android.gms.nearby.messages.MessageListener;
 import com.google.gson.Gson;

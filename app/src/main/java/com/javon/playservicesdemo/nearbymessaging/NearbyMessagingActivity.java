@@ -75,6 +75,9 @@ public class NearbyMessagingActivity extends AppCompatActivity
         return uuid;
     }
 
+    private boolean isSubscribed = false;
+    private boolean isPublishing = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,16 +111,26 @@ public class NearbyMessagingActivity extends AppCompatActivity
         publishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                publishButton.setEnabled(false);
-                publish();
+                if(isPublishing) {
+                    unpublish();
+                    publishButton.setText("Stop Publishing");
+                } else {
+                    publish();
+                }
+                isPublishing = !isPublishing;
             }
         });
 
         subscribeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                subscribeButton.setEnabled(false);
-                subscribe();
+                if(isSubscribed) {
+                    unsubscribe();
+                    subscribeButton.setText("Subscribe");
+                } else {
+                    subscribe();
+                }
+            isSubscribed = !isSubscribed;
             }
         });
 
@@ -167,7 +180,7 @@ public class NearbyMessagingActivity extends AppCompatActivity
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                subscribeButton.setEnabled(true);
+                                subscribeButton.setText("Subscribe");
                             }
                         });
                     }
@@ -180,9 +193,10 @@ public class NearbyMessagingActivity extends AppCompatActivity
                         if (status.isSuccess()) {
                             Log.i(LOG_TAG, "Subscribed successfully.");
                             logAndShowSnackbar("Subscribed successfully.");
+                            subscribeButton.setText("Unsubscribe");
                         } else {
                             logAndShowSnackbar("Could not subscribe, status = " + status);
-                            subscribeButton.setEnabled(true);
+                            subscribeButton.setText("Subscribe");
                         }
                     }
                 });
@@ -204,7 +218,7 @@ public class NearbyMessagingActivity extends AppCompatActivity
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                publishButton.setEnabled(true);
+                                publishButton.setText("Publish");
                             }
                         });
                     }
@@ -217,10 +231,10 @@ public class NearbyMessagingActivity extends AppCompatActivity
                         if (status.isSuccess()) {
                             Log.i(LOG_TAG, "Published successfully.");
                             logAndShowSnackbar("Published successfully.");
-                            publishButton.setEnabled(true);
+                            publishButton.setText("Publish");
                         } else {
                             logAndShowSnackbar("Could not publish, status = " + status);
-                            publishButton.setEnabled(true);
+                            publishButton.setText("Publish");
                         }
                     }
                 });
