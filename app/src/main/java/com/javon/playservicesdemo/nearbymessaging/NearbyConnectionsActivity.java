@@ -108,7 +108,6 @@ public class NearbyConnectionsActivity extends AppCompatActivity
                 @Override
                 public void onEndpointFound(
                         String endpointId, DiscoveredEndpointInfo discoveredEndpointInfo) {
-                    Log.i(LOG_TAG, "Endpoint found");
                     // Might want to show users a list of users so they choose who they'd like to connect to
                     if (getServiceId().equals(discoveredEndpointInfo.getServiceId())) {
                         logAndShowSnackbar(String.format("Endpoint %s was discovered", discoveredEndpointInfo.getEndpointName()));
@@ -146,6 +145,7 @@ public class NearbyConnectionsActivity extends AppCompatActivity
                             .enableAutoManage(this, this)
                             .build();
         }
+
     }
 
     public void requestPermissions() {
@@ -193,6 +193,7 @@ public class NearbyConnectionsActivity extends AppCompatActivity
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         logAndShowSnackbar("Google Play Services Client connected");
+        Nearby.Connections.stopAllEndpoints(mGoogleApiClient);
     }
 
     @Override
@@ -214,7 +215,7 @@ public class NearbyConnectionsActivity extends AppCompatActivity
     // we'll verify that the advertiser has the same service id before we consider connecting to
     // them.
     public String getServiceId() {
-        return "Plurasight";
+        return "com.javon.playservicesdemo";
     }
 
     // Step 7: Define function start advertising
@@ -227,7 +228,14 @@ public class NearbyConnectionsActivity extends AppCompatActivity
                 new AdvertisingOptions(Strategy.P2P_CLUSTER)).setResultCallback(new ResultCallback<Connections.StartAdvertisingResult>() {
             @Override
             public void onResult(@NonNull Connections.StartAdvertisingResult startAdvertisingResult) {
-                logAndShowSnackbar("Advertising with name " + startAdvertisingResult.getLocalEndpointName());
+                isAdvertising = startAdvertisingResult.getStatus().isSuccess();
+                if(isAdvertising) {
+                    logAndShowSnackbar("Advertising with name " + startAdvertisingResult.getLocalEndpointName());
+                    advertiseButton.setText("Stop Advertising");
+                } else {
+                    logAndShowSnackbar("Could not advertise with status = " + startAdvertisingResult.getStatus());
+                    advertiseButton.setText("Advertise");
+                }
             }
         });
     }
@@ -236,7 +244,7 @@ public class NearbyConnectionsActivity extends AppCompatActivity
     private void startDiscovery() {
         Nearby.Connections.startDiscovery(
                 mGoogleApiClient,
-                getUserNickname(),
+                getServiceId(),
                 mEndpointDiscoveryCallback,
                 new DiscoveryOptions(Strategy.P2P_CLUSTER)).setResultCallback(new ResultCallback<Status>() {
             @Override
@@ -297,4 +305,8 @@ public class NearbyConnectionsActivity extends AppCompatActivity
         Nearby.Connections.sendPayload(mGoogleApiClient, mEndpointID, Payload.fromBytes(String.format("Hello World! My name is %s", Build.MODEL).getBytes()));
     }
 
+    public void disconnect(View view) {
+        // Step 14: Disconnect from the Endpoint
+        Nearby.Connections.disconnectFromEndpoint(mGoogleApiClient, mEndpointID); // Or we can use Nearby.Connections.stopAllEndpoints(mGoogleApiClient);
+    }
 }

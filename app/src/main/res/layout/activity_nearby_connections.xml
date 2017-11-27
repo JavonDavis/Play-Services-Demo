@@ -40,4 +40,14 @@
         android:onClick="sendPayload"
         android:text="Send Message" />
 
+    <Button
+        android:id="@+id/disconnect_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/payload_button"
+        android:layout_below="@+id/payload_button"
+        android:layout_marginTop="13dp"
+        android:onClick="disconnect"
+        android:text="Disconnect" />
+
 </RelativeLayout>
