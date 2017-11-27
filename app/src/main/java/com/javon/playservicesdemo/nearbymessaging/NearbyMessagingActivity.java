@@ -38,8 +38,6 @@ public class NearbyMessagingActivity extends AppCompatActivity
 
     private static final int TTL_IN_SECONDS = 2 * 60; // Two minutes.
 
-    private Message mActiveMessage;
-
     private MessageListener mMessageListener;
 
     private Button publishButton;
@@ -181,6 +179,7 @@ public class NearbyMessagingActivity extends AppCompatActivity
                             @Override
                             public void run() {
                                 subscribeButton.setText("Subscribe");
+                                isSubscribed = !isSubscribed;
                             }
                         });
                     }
@@ -219,6 +218,7 @@ public class NearbyMessagingActivity extends AppCompatActivity
                             @Override
                             public void run() {
                                 publishButton.setText("Publish");
+                                isPublishing = !isPublishing;
                             }
                         });
                     }
@@ -246,6 +246,7 @@ public class NearbyMessagingActivity extends AppCompatActivity
     private void unsubscribe() {
         Log.i(LOG_TAG, "Unsubscribing.");
         Nearby.Messages.unsubscribe(mGoogleApiClient, mMessageListener);
+        isSubscribed = false;
     }
 
     /**
@@ -254,6 +255,7 @@ public class NearbyMessagingActivity extends AppCompatActivity
     private void unpublish() {
         Log.i(LOG_TAG, "Unpublishing.");
         Nearby.Messages.unpublish(mGoogleApiClient, publicMessage);
+        isPublishing = false;
     }
 
     /**

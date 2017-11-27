@@ -18,13 +18,19 @@
             android:name="com.google.android.nearby.messages.API_KEY"
             android:value="@string/API_KEY" />
 
-        <activity android:name=".nearbymessaging.NearbyMessagingActivity"></activity>
-        <activity android:name=".nearbymessaging.NearbyConnectionsActivity">
+        <activity android:name=".nearbymessaging.NearbyMessagingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".nearbymessaging.NearbyConnectionsActivity">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
     </application>
 
