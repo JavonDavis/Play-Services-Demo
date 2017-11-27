@@ -32,6 +32,18 @@ public class NearbyConnectionsActivity extends AppCompatActivity
     private boolean isDiscovering = false;
     private boolean isAdvertising = false;
 
+    // Step 1: Define Endpoint Variable
+
+
+    // Step 4: Define PayloadCallback
+
+
+    // Step 5: Define Connection LifeCycle Callback
+
+
+    // Step 6: Define Endpoint Discovery Callback
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,10 +52,11 @@ public class NearbyConnectionsActivity extends AppCompatActivity
         discoverButton = (Button) findViewById(R.id.discover_button);
         advertiseButton = (Button) findViewById(R.id.advertise_button);
 
+        createGoogleApiClient();
         requestPermissions();
 
-        createGoogleApiClient();
     }
+
 
     private void createGoogleApiClient() {
         if (mGoogleApiClient == null) {
@@ -54,6 +67,7 @@ public class NearbyConnectionsActivity extends AppCompatActivity
                             .enableAutoManage(this, this)
                             .build();
         }
+
     }
 
     public void requestPermissions() {
@@ -61,8 +75,8 @@ public class NearbyConnectionsActivity extends AppCompatActivity
                 Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                        PERMISSION_REQUEST_COARSE_LOCATION);
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    PERMISSION_REQUEST_COARSE_LOCATION);
         }
     }
 
@@ -100,29 +114,52 @@ public class NearbyConnectionsActivity extends AppCompatActivity
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        logAndShowSnackbar("Connection connected");
+        logAndShowSnackbar("Google Play Services Client connected");
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-        logAndShowSnackbar("Connection suspended");
+        logAndShowSnackbar("Google Play Services Client suspended");
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        logAndShowSnackbar("Connection failed");
+        logAndShowSnackbar("Google Play Services Client failed");
     }
+
+    // Step 2: Define function to get a string to represent the device
+
+
+    // Step 3: Define function get Service ID. This represents the action this connection is for. When discovering,
+    // we'll verify that the advertiser has the same service id before we consider connecting to
+    // them.
+
+
+    // Step 7: Define function start advertising
+
+
+    // Step 8: Define function to start discovering
+
+
+    // Step 9: Define Function to stop advertising
+
+
+    // Step 10: Define function to stop discovering
 
 
     public void advertise(View view) {
-        logAndShowSnackbar("Advertising");
+        // Step 11: Start or stop Advertising
     }
 
     public void discover(View view) {
-        logAndShowSnackbar("Discovering");
+        // Step 12: Start or stop Advertising
     }
 
     public void sendPayload(View view) {
+        // Step 13: Send Payload messsage
+    }
 
+    public void disconnect(View view) {
+        // Step 14: Disconnect from the Endpoint
     }
 }
