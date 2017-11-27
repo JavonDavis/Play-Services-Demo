@@ -1,12 +1,11 @@
 package com.javon.playservicesdemo.nearbymessaging;
 
-import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -86,8 +85,7 @@ public class NearbyMessagingActivity extends AppCompatActivity
 
         // Build the message that is going to be published. This contains the device name and a
         // UUID.
-        publicMessage = NearbyMessage.newMessage(getUUID(getSharedPreferences(
-                getApplicationContext().getPackageName(), Context.MODE_PRIVATE)));
+        publicMessage = NearbyMessage.newMessage();
 
 
         mMessageListener = new MessageListener() {

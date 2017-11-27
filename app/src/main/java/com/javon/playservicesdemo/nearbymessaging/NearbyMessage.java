@@ -19,16 +19,14 @@ public class NearbyMessage {
 
     private static final Gson gson = new Gson();
 
-    private final String mUUID;
     private final String mBody;
 
     /**
-     * Builds a new message from the @param id
-     * @param id
+     * Builds a new message
      * @return Message object
      */
-    public static Message newMessage(String id) {
-        NearbyMessage message = new NearbyMessage(id);
+    public static Message newMessage() {
+        NearbyMessage message = new NearbyMessage();
         return new Message(gson.toJson(message).getBytes(Charset.forName("UTF-8")));
     }
 
@@ -40,8 +38,7 @@ public class NearbyMessage {
 
     }
 
-    private NearbyMessage(String uuid) {
-        mUUID = uuid;
+    private NearbyMessage() {
         mBody = Build.MODEL;
     }
 
