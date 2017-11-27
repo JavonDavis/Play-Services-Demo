@@ -16,11 +16,14 @@ import android.widget.Button;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.connection.AdvertisingOptions;
 import com.google.android.gms.nearby.connection.ConnectionInfo;
 import com.google.android.gms.nearby.connection.ConnectionLifecycleCallback;
 import com.google.android.gms.nearby.connection.ConnectionResolution;
+import com.google.android.gms.nearby.connection.Connections;
 import com.google.android.gms.nearby.connection.ConnectionsStatusCodes;
 import com.google.android.gms.nearby.connection.DiscoveredEndpointInfo;
 import com.google.android.gms.nearby.connection.DiscoveryOptions;
@@ -221,7 +224,12 @@ public class NearbyConnectionsActivity extends AppCompatActivity
                 getUserNickname(),
                 getServiceId(),
                 mConnectionLifecycleCallback,
-                new AdvertisingOptions(Strategy.P2P_CLUSTER));
+                new AdvertisingOptions(Strategy.P2P_CLUSTER)).setResultCallback(new ResultCallback<Connections.StartAdvertisingResult>() {
+            @Override
+            public void onResult(@NonNull Connections.StartAdvertisingResult startAdvertisingResult) {
+                logAndShowSnackbar("Advertising with name " + startAdvertisingResult.getLocalEndpointName());
+            }
+        });
     }
 
     // Step 8: Define function to start discovering
@@ -230,7 +238,19 @@ public class NearbyConnectionsActivity extends AppCompatActivity
                 mGoogleApiClient,
                 getUserNickname(),
                 mEndpointDiscoveryCallback,
-                new DiscoveryOptions(Strategy.P2P_CLUSTER));
+                new DiscoveryOptions(Strategy.P2P_CLUSTER)).setResultCallback(new ResultCallback<Status>() {
+            @Override
+            public void onResult(@NonNull Status status) {
+                isDiscovering = status.isSuccess();
+                if(isDiscovering) {
+                    logAndShowSnackbar("Discovering");
+                    discoverButton.setText("Stop Discovering");
+                } else {
+                    logAndShowSnackbar("Could not discover, status = " + status);
+                    discoverButton.setText("Discover");
+                }
+            }
+        });
     }
 
     // Step 9: Define Function to stop advertising
@@ -247,7 +267,6 @@ public class NearbyConnectionsActivity extends AppCompatActivity
 
 
     public void advertise(View view) {
-        logAndShowSnackbar("Advertising");
         // Step 11: Start or stop Advertising
         if(isAdvertising) {
             stopAdvertising();
@@ -261,7 +280,6 @@ public class NearbyConnectionsActivity extends AppCompatActivity
     }
 
     public void discover(View view) {
-        logAndShowSnackbar("Discovering");
         // Step 12: Start or stop Advertising
         if(isDiscovering) {
             stopDiscovering();
