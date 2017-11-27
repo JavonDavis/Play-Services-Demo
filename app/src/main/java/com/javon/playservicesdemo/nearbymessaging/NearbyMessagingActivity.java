@@ -27,23 +27,6 @@ public class NearbyMessagingActivity extends AppCompatActivity{
 
     }
 
-
-    /**
-     * Subscribes to messages from nearby devices and updates the UI if the subscription either
-     * fails or TTLs.
-     */
-    private void subscribe() {
-        logAndShowSnackbar("Subscribing");
-    }
-
-    /**
-     * Publishes a message to nearby devices and updates the UI if the publication either fails or
-     * TTLs.
-     */
-    private void publish() {
-        logAndShowSnackbar("Publishing");
-    }
-
     /**
      * Logs a message and shows a {@link Snackbar} using {@code text};
      *
