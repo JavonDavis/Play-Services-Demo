@@ -193,7 +193,6 @@ public class NearbyConnectionsActivity extends AppCompatActivity
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         logAndShowSnackbar("Google Play Services Client connected");
-        Nearby.Connections.stopAllEndpoints(mGoogleApiClient);
     }
 
     @Override
