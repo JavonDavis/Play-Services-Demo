@@ -9,12 +9,27 @@ import android.widget.Button;
 
 import com.javon.playservicesdemo.R;
 
-public class NearbyMessagingActivity extends AppCompatActivity{
+// Step 5: Implement Google API Interfaces
+public class NearbyMessagingActivity extends AppCompatActivity {
 
     private static String LOG_TAG = "NearbyMessagingActivity";
 
     private Button publishButton;
     private Button subscribeButton;
+
+    private boolean isSubscribing = false;
+    private boolean isPublishing = false;
+
+    // Step 2: Define Global Google API Client
+
+
+    // Step 7: Define a Strategy. For more about Strategies visit https://developers.google.com/android/reference/com/google/android/gms/nearby/messages/Strategy
+
+
+    // Step 8: Define Listener for messages
+
+
+    // Step 16: Define Message to be sent
 
 
     @Override
@@ -24,6 +39,21 @@ public class NearbyMessagingActivity extends AppCompatActivity{
 
         publishButton = (Button) findViewById(R.id.publish_button);
         subscribeButton = (Button) findViewById(R.id.subscribe_button);
+
+        // Step 4: Build Google API Client
+
+
+        // Step 14: Implement Message Listener
+
+
+        // Step 17: Set the Message to be sent
+
+
+        // Step 21: Define listener for subscribe button
+
+
+        // Step 22: Define listener for publish button
+
 
     }
 
@@ -39,6 +69,19 @@ public class NearbyMessagingActivity extends AppCompatActivity{
             Snackbar.make(container, text, Snackbar.LENGTH_LONG).show();
         }
     }
+
+    // Step 3: Define function to Build Google API Client
+
+
+    // Step 6: Implement Google API Interface functions
+
+
+    // Step 15: Create function to Subscribe to Messages
+
+
+    // Step 18: Create function to publish messages
+
+    // Step 19: Define function to unsubscribe from messages
+
+    // Step 20: Define function to stop publishing
 }
-
-
