@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -12,9 +13,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.nearby.Nearby;
 import com.javon.playservicesdemo.R;
 
-public class NearbyConnectionsActivity extends AppCompatActivity {
+public class NearbyConnectionsActivity extends AppCompatActivity
+        implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
 
     private Button discoverButton;
     private Button advertiseButton;
@@ -22,6 +27,10 @@ public class NearbyConnectionsActivity extends AppCompatActivity {
     private final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
 
     private final String LOG_TAG = "NearbyConnections";
+    private GoogleApiClient mGoogleApiClient;
+
+    private boolean isDiscovering = false;
+    private boolean isAdvertising = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +41,19 @@ public class NearbyConnectionsActivity extends AppCompatActivity {
         advertiseButton = (Button) findViewById(R.id.advertise_button);
 
         requestPermissions();
+
+        createGoogleApiClient();
+    }
+
+    private void createGoogleApiClient() {
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient =
+                    new GoogleApiClient.Builder(this)
+                            .addApi(Nearby.CONNECTIONS_API)
+                            .addConnectionCallbacks(this)
+                            .enableAutoManage(this, this)
+                            .build();
+        }
     }
 
     public void requestPermissions() {
@@ -63,19 +85,6 @@ public class NearbyConnectionsActivity extends AppCompatActivity {
         }
     }
 
-
-    public void advertise(View view) {
-        logAndShowSnackbar("Advertising");
-    }
-
-    public void discover(View view) {
-        logAndShowSnackbar("Discovering");
-    }
-
-    public void sendPayload(View view) {
-
-    }
-
     /**
      * Logs a message and shows a {@link Snackbar} using {@code text};
      *
@@ -87,5 +96,33 @@ public class NearbyConnectionsActivity extends AppCompatActivity {
         if (container != null) {
             Snackbar.make(container, text, Snackbar.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        logAndShowSnackbar("Connection connected");
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        logAndShowSnackbar("Connection suspended");
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        logAndShowSnackbar("Connection failed");
+    }
+
+
+    public void advertise(View view) {
+        logAndShowSnackbar("Advertising");
+    }
+
+    public void discover(View view) {
+        logAndShowSnackbar("Discovering");
+    }
+
+    public void sendPayload(View view) {
+
     }
 }
