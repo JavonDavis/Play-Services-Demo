@@ -24,7 +24,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/publish_button"
-        android:onClick="publishMessage"
         android:layout_marginBottom="194dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
