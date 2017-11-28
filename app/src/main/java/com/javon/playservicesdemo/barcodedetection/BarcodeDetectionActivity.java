@@ -217,59 +217,5 @@ public class BarcodeDetectionActivity extends AppCompatActivity {
 
     public void detectBarcode(Bitmap imageBitmap) {
         // big Step 2: Detect Barcodes
-        StringBuilder barcodeInfo = new StringBuilder();
-
-        BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(this)
-                .setBarcodeFormats(Barcode.ALL_FORMATS)
-                .build();
-
-        if(!barcodeDetector.isOperational()) {
-            // Note: The first time that an app using a Vision API is installed on a
-            // device, GMS will download a native libraries to the device in order to do detection.
-            // Usually this completes before the app is run for the first time.  But if that
-            // download has not yet completed, then the above call will not detect any text,
-            // barcodes, or faces.
-            //
-            // isOperational() can be used to check if the required native libraries are currently
-            // available.  The detectors will automatically become operational once the library
-            // downloads complete on device.
-            Log.w(LOG_TAG, "Detector dependencies are not yet available.");
-
-            // Check for low storage.  If there is low storage, the native library will not be
-            // downloaded, so detection will not become operational.
-            IntentFilter lowstorageFilter = new IntentFilter(Intent.ACTION_DEVICE_STORAGE_LOW);
-            boolean hasLowStorage = registerReceiver(null, lowstorageFilter) != null;
-
-            if (hasLowStorage) {
-                Toast.makeText(this,"Low Storage", Toast.LENGTH_LONG).show();
-                Log.w(LOG_TAG, "Low Storage");
-            }
-        }
-
-
-        Frame imageFrame = new Frame.Builder()
-                .setBitmap(imageBitmap)
-                .build();
-
-        SparseArray<Barcode> barcodes = barcodeDetector.detect(imageFrame);
-
-        for (int i = 0; i < barcodes.size(); i++) {
-            Barcode barcode = barcodes.get(barcodes.keyAt(i));
-
-            barcodeInfo.append(barcode.displayValue);
-            barcodeInfo.append("\n");
-        }
-
-        String result = barcodeInfo.toString();
-
-        if (result.isEmpty()) {
-            result = "Detected no Barcode!";
-        }
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Barcode Detection sample")
-                .setMessage(result)
-                .setPositiveButton("OK", null)
-                .show();
     }
 }

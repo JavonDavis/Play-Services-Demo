@@ -18,9 +18,6 @@
             android:value="@string/API_KEY" />
 
         <!-- Step 1: Add Dependency-->
-        <meta-data
-            android:name="com.google.android.gms.vision.DEPENDENCIES"
-            android:value="barcode" />
 
         <activity android:name=".barcodedetection.BarcodeDetectionActivity">
             <intent-filter>
