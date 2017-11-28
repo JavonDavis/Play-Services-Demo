@@ -1,9 +1,6 @@
 package com.javon.playservicesdemo.barcodedetection;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -11,7 +8,6 @@ import android.content.pm.ResolveInfo;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -25,7 +21,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.vision.Frame;
@@ -160,19 +155,6 @@ public class BarcodeDetectionActivity extends AppCompatActivity {
         return bm;
     }
 
-    /**
-     * Image from the camera comes it at -90 degree angle, we'd like to rotate it to get it upright
-     * @param source
-     * @param angle
-     * @return
-     */
-    public static Bitmap rotateImage(Bitmap source, float angle) {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
-        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
-                matrix, true);
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode != RC_HANDLE_PERMISSIONS) {
@@ -200,10 +182,9 @@ public class BarcodeDetectionActivity extends AppCompatActivity {
             try
             {
                 imageBitmap = readBitmap(mImageUri);
-                Bitmap rotatedBitmap = rotateImage(imageBitmap, 90);
 
                 if(imageBitmap != null) {
-                    detectBarcode(rotatedBitmap);
+                    detectBarcode(imageBitmap);
                 }
             }
             catch (Exception e)
