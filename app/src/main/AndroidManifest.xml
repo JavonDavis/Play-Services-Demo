@@ -17,7 +17,7 @@
             android:name="com.google.android.nearby.messages.API_KEY"
             android:value="@string/API_KEY" />
 
-        <!-- Step 1: Add Dependency-->
+        <!-- Step 1: Add Dependency -->
 
         <activity android:name=".barcodedetection.BarcodeDetectionActivity">
             <intent-filter>
