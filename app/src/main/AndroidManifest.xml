@@ -17,7 +17,7 @@
             android:name="com.google.android.nearby.messages.API_KEY"
             android:value="@string/API_KEY" />
 
-        <!-- Add dependencies to manifest -->
+        <!-- Step 2: Add dependencies to manifest -->
 
         <activity android:name=".textdetection.TextDetectionActivity"
             android:screenOrientation="portrait">
