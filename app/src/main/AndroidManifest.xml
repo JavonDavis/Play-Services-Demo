@@ -18,11 +18,8 @@
             android:value="@string/API_KEY" />
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
-            android:value="ocr,barcode,face" />
+            android:value="face" />
 
-        <activity android:name=".nearbymessaging.NearbyMessagingActivity" />
-        <activity android:name=".textdetection.TextDetectionActivity" />
-        <activity android:name=".barcodedetection.BarcodeDetectionActivity"/>
         <activity android:name=".facedetection.FaceDetectionActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,6 +27,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.example.android.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
     </application>
 
 </manifest>
