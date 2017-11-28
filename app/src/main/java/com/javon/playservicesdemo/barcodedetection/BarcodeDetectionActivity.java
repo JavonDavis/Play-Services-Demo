@@ -173,8 +173,50 @@ public class BarcodeDetectionActivity extends AppCompatActivity {
                 matrix, true);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode != RC_HANDLE_PERMISSIONS) {
+            logAndShowSnackbar("Got unexpected permission result: " + requestCode);
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            return;
+        }
+
+        if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+            logAndShowSnackbar("Permissions granted, fire off the intent");
+            dispatchTakePictureIntent();
+            return;
+        }
+
+        logAndShowSnackbar("Permission not granted: results len = " + grantResults.length +
+                " Result code = " + (grantResults.length > 0 ? grantResults[0] : "(empty)"));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            this.getContentResolver().notifyChange(mImageUri, null);
+            Bitmap imageBitmap;
+            try
+            {
+                imageBitmap = readBitmap(mImageUri);
+                Bitmap rotatedBitmap = rotateImage(imageBitmap, 90);
+
+                if(imageBitmap != null) {
+                    detectBarcode(rotatedBitmap);
+                }
+            }
+            catch (Exception e)
+            {
+                Toast.makeText(this, "Failed to load", Toast.LENGTH_SHORT).show();
+                Log.d(LOG_TAG, "Failed to load", e);
+            }
+
+        }
+    }
 
     public void detectBarcode(Bitmap imageBitmap) {
+        // big Step 2: Detect Barcodes
         StringBuilder barcodeInfo = new StringBuilder();
 
         BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(this)
@@ -229,47 +271,5 @@ public class BarcodeDetectionActivity extends AppCompatActivity {
                 .setMessage(result)
                 .setPositiveButton("OK", null)
                 .show();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode != RC_HANDLE_PERMISSIONS) {
-            logAndShowSnackbar("Got unexpected permission result: " + requestCode);
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-            return;
-        }
-
-        if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
-                grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-            logAndShowSnackbar("Permissions granted, fire off the intent");
-            dispatchTakePictureIntent();
-            return;
-        }
-
-        logAndShowSnackbar("Permission not granted: results len = " + grantResults.length +
-                " Result code = " + (grantResults.length > 0 ? grantResults[0] : "(empty)"));
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            this.getContentResolver().notifyChange(mImageUri, null);
-            Bitmap imageBitmap;
-            try
-            {
-                imageBitmap = readBitmap(mImageUri);
-                Bitmap rotatedBitmap = rotateImage(imageBitmap, 90);
-
-                if(imageBitmap != null) {
-                    detectBarcode(rotatedBitmap);
-                }
-            }
-            catch (Exception e)
-            {
-                Toast.makeText(this, "Failed to load", Toast.LENGTH_SHORT).show();
-                Log.d(LOG_TAG, "Failed to load", e);
-            }
-
-        }
     }
 }
