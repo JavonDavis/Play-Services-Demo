@@ -200,6 +200,7 @@ public class FaceDetectionActivity extends AppCompatActivity {
     }
 
     public void detectFaces(Bitmap imageBitmap) {
+        // Step 2: Detect Faces
         StringBuilder faceInfo = new StringBuilder();
 
         FaceDetector faceDetector = new FaceDetector.Builder(this)
