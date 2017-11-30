@@ -50,7 +50,6 @@ public class FaceDetectionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_face_detection);
-
     }
 
     public void takePicture(View view) {
@@ -201,70 +200,5 @@ public class FaceDetectionActivity extends AppCompatActivity {
 
     public void detectFaces(Bitmap imageBitmap) {
         // Step 2: Detect Faces
-        StringBuilder faceInfo = new StringBuilder();
-
-        FaceDetector faceDetector = new FaceDetector.Builder(this)
-                .setProminentFaceOnly(true)
-                .setClassificationType(FaceDetector.ALL_CLASSIFICATIONS)
-                .build();
-
-        if(!faceDetector.isOperational()) {
-            // Note: The first time that an app using a Vision API is installed on a
-            // device, GMS will download a native libraries to the device in order to do detection.
-            // Usually this completes before the app is run for the first time.  But if that
-            // download has not yet completed, then the above call will not detect any text,
-            // barcodes, or faces.
-            //
-            // isOperational() can be used to check if the required native libraries are currently
-            // available.  The detectors will automatically become operational once the library
-            // downloads complete on device.
-            Log.w(LOG_TAG, "Detector dependencies are not yet available.");
-
-            // Check for low storage.  If there is low storage, the native library will not be
-            // downloaded, so detection will not become operational.
-            IntentFilter lowstorageFilter = new IntentFilter(Intent.ACTION_DEVICE_STORAGE_LOW);
-            boolean hasLowStorage = registerReceiver(null, lowstorageFilter) != null;
-
-            if (hasLowStorage) {
-                Toast.makeText(this,"Low Storage", Toast.LENGTH_LONG).show();
-                Log.w(LOG_TAG, "Low Storage");
-            }
-        }
-
-
-        Frame imageFrame = new Frame.Builder()
-                .setBitmap(imageBitmap)
-                .build();
-
-        SparseArray<Face> faces = faceDetector.detect(imageFrame);
-
-        for (int i = 0; i < faces.size(); i++) {
-            Face face = faces.get(faces.keyAt(i));
-
-            String message = "Face was detected... ";
-            if(face.getIsSmilingProbability() == Face.UNCOMPUTED_PROBABILITY) {
-                message += "But we could not tell if it was happy or not :/";
-            }
-            else if(face.getIsSmilingProbability() < 0.5) {
-                message += "and it wasn't so happy";
-            }
-            else {
-                message += "and it was really happy!";
-            }
-            faceInfo.append(message);
-            faceInfo.append("\n\n");
-        }
-
-        String result = faceInfo.toString();
-
-        if (result.isEmpty()) {
-            result = "Detected no Face!";
-        }
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Face Detection sample")
-                .setMessage(result)
-                .setPositiveButton("OK", null)
-                .show();
     }
 }
